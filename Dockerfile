@@ -12,11 +12,14 @@ RUN npm install
 RUN npm install -g pm2
 
 # Can't think of an alternative way of offering first run configuration and then normal running other than 
-# using this shell script to alternate between running 'node wiki configure' and a pm 2 command
-# Learned a valuable lesson about Docker containers when I tried to do 'node wiki start' - it starts the 
-# server in the background and exits ... which causes the container to terminate 
+# using this shell script to alternate between running 'node wiki configure' and 'node wiki start' but
+# with the pm2 process not being sent to the background via a pm2.disconnect()
 
-RUN echo -e "#!/bin/sh\nif [ -f /var/www/.first-run ]\nthen\n  node wiki configure\nelse\n  echo 'something else'\nfi \n" > /var/www/start.sh
+RUN cp server/init.js server/init.js.orig
+# Comment out the pm2.disconnect() - this probably does something terrible I don't have enough knowledge to understand ...
+RUN sed '/startInBackgroundMode/,/catch/ s/pm2.disconnect()/\/\/pm2.disconnect/' < server/init.js > server/docker.init.js && mv server/docker.init.js server/init.js
+
+RUN echo -e "#!/bin/sh\nif [ -f /var/www/.first-run ]\nthen\n  node wiki configure &&  rm /var/www/.first-run \nelse\n  echo 'node wiki start'\nfi \n" > /var/www/start.sh
 RUN chmod +x /var/www/start.sh
 
 CMD ["/var/www/start.sh"]
