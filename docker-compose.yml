@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    image: jamesgallagher/docker-wikijs
+    ports:
+      - "3000:3000"
+    links:
+      - mongodb
+  mongodb:
+    image: mongo
