@@ -3,9 +3,10 @@ services:
   web:
     environment:
       - VIRTUAL_HOST=wikijs.jamesgallagher.ie
-    image: jamesgallagher/docker-wikijs
+    image: 91e862977f88
     ports:
       - "3000:3000"
+      - "80"
     links:
       - mongodb
     network_mode: "bridge"

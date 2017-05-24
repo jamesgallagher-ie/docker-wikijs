@@ -19,11 +19,12 @@ RUN cp server/init.js server/init.js.orig
 # Comment out the pm2.disconnect() - this probably does something terrible I don't have enough knowledge to understand ...
 RUN sed '/startInBackgroundMode/,/catch/ s/pm2.disconnect()/\/\/pm2.disconnect/' < server/init.js > server/docker.init.js && mv server/docker.init.js server/init.js
 
-RUN echo -e "#!/bin/sh\nif [ -f /var/www/.first-run ]\nthen\n  node wiki configure &&  rm /var/www/.first-run \nelse\n  echo 'node wiki start'\nfi \n" > /var/www/start.sh
+RUN echo -e "#!/bin/sh\nif [ -f /var/www/.first-run ]\nthen\n  node wiki configure &&  rm /var/www/.first-run \nelse\n  echo 'cd /var/www && node wiki start'\nfi\n" > /var/www/start.sh
 RUN chmod +x /var/www/start.sh
 
 CMD ["/var/www/start.sh"]
 
 EXPOSE 3000
+EXPOSE 80
 
 
