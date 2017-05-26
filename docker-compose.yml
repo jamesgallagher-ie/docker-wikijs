@@ -3,7 +3,7 @@ services:
   web:
     environment:
       - VIRTUAL_HOST=wikijs.jamesgallagher.ie
-    image: 91e862977f88
+    image: 09ad1d927d49
     ports:
       - "3000:3000"
       - "80"
